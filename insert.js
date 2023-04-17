@@ -6,25 +6,25 @@ const insertData = async () => {
     {
       name: "Max 1",
       price: 7000,
-      catergory: "phone",
+      category: "phone",
       brand: "vivo",
     },
     {
       name: "Max 2",
       price: 2000,
-      catergory: "phone",
+      category: "phone",
       brand: "oppo",
     },
     {
       name: "Max 3",
       price: 3000,
-      catergory: "phone",
+      category: "phone",
       brand: "Redmi",
     },
     {
       name: "Max 4",
       price: 4000,
-      catergory: "phone",
+      category: "phone",
       brand: "Real me",
     },
   ];

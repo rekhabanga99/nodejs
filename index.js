@@ -1,15 +1,24 @@
+const express = require("express");
 const dbConnect = require("./mongodb");
+const app = express();
 
-const findData = async () => {
-  let result = await dbConnect();
-  result = await result.find({}).toArray();
-  if (result.length) {
-    console.log("Data fetched Succesfully", result);
-  }else{
-    console.log("No data avaiilable ", result);
+app.use(express.json());
 
+app.get("/", async (req, res) => {
+  const db = await dbConnect();
+  const data = await db.find().toArray();
+  res.send(data);
+  console.log(data);
+});
+
+app.post("/", async (req, res) => {
+  const dataToBeInserted = req.body;
+  let db = await dbConnect();
+  const result = await db.insertOne(dataToBeInserted);
+  if (result.acknowledged) {
+    console.log("Data inserted Succesfully");
   }
 
-  return result;
-};
-findData();
+  res.send(dataToBeInserted);
+});
+app.listen(5000);
