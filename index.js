@@ -1,24 +1,35 @@
 const express = require("express");
-const dbConnect = require("./mongodb");
 const app = express();
 
 app.use(express.json());
+require("./config");
 
-app.get("/", async (req, res) => {
-  const db = await dbConnect();
-  const data = await db.find().toArray();
-  res.send(data);
-  console.log(data);
-});
+const ProductModel = require("./productsSchema");
 
 app.post("/", async (req, res) => {
-  const dataToBeInserted = req.body;
-  let db = await dbConnect();
-  const result = await db.insertOne(dataToBeInserted);
-  if (result.acknowledged) {
-    console.log("Data inserted Succesfully");
-  }
-
-  res.send(dataToBeInserted);
+  const payload = req.body;
+  let data = new ProductModel(payload);
+  const result = await data.save();
+  res.send(result);
 });
+
+app.put("/update/:_id", async (req, res) => {
+  console.log(req.params, "=====params========");
+  console.log(req.body, "======body=======");
+
+  let result = await ProductModel.updateOne(req.params, { $set: req.body });
+  res.send(result);
+});
+
+app.delete("/delete/:_id", async (req, res) => {
+  const payload = req.params;
+  let result = await ProductModel.deleteOne(payload);
+  res.send(result);
+});
+
+app.get("/", async (req, res) => {
+  let result = await ProductModel.find({});
+  res.send(result);
+});
+
 app.listen(5000);
