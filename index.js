@@ -1,10 +1,33 @@
 const express = require("express");
+const multer = require("multer");
 const app = express();
-
 app.use(express.json());
 require("./config");
 
 const ProductModel = require("./productsSchema");
+
+
+// SET STORAGE
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + '.jpg')
+  }
+})
+var upload = multer({ storage: storage })
+
+app.post('/upload', upload.single('image'), (req, res, next) => {
+  const file = req.file
+  if (!file) {
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+    res.send(file)
+ 
+})
 
 app.post("/", async (req, res) => {
   const payload = req.body;
